@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project    xmlns="http://maven.apache.org/POM/4.0.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                                https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.github.dgp-eu</groupId>
+    <artifactId>json_split</artifactId>
+    <name>json_split</name>
+    <description>Java classes to split huge JSON file(s) into smaller and more manageable pieces</description>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 2.0</name>
+            <url>https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>dgp.eu</id>
+            <name>Daniel-Gheorghe Popiniuc</name>
+            <email>danielpopiniuc@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+            <timezone>+2</timezone>
+            <organization>dgp-eu</organization>
+            <organizationUrl>https://github.com/dgp-eu</organizationUrl>
+        </developer>
+    </developers>
+
+    <properties>
+        <!-- File encoding properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Build properties -->
+        <java.version>26</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <sonar.organization>dgp-eu</sonar.organization>
+        <!-- Dependency versions -->
+        <tools.version>1.1.2-SNAPSHOT</tools.version>
+        <jackson-databind.version>3.2.1</jackson-databind.version>
+        <!-- Build Plugin versions -->
+        <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
+        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
+        <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
+        <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
+        <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <takari-lifecycle-plugin.version>2.3.4</takari-lifecycle-plugin.version>
+        <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.dgp-eu</groupId>
+            <artifactId>tools-core</artifactId>
+            <version>${tools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.dgp-eu</groupId>
+            <artifactId>tools-cli</artifactId>
+            <version>${tools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-surefire-plugin -->
+            <!-- Description: Maven Surefire MOJO in maven-surefire-plugin. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>${flatten-maven-plugin.version}</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <!-- enable flattening -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- ensure proper cleanup -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Source: https://github.com/takari/takari-lifecycle/releases -->
+            <!-- Binaries: https://repo1.maven.org/maven2/io/takari/maven/plugins/takari-lifecycle-plugin -->
+            <!-- Description: Takari Lifecycle Plugin -->
+            <plugin>
+                <groupId>io.takari.maven.plugins</groupId>
+                <artifactId>takari-lifecycle-plugin</artifactId>
+                <version>${takari-lifecycle-plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceJar>true</sourceJar>
+                    <testJar>false</testJar>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
+            <!-- Source: https://maven.apache.org/plugins/maven-antrun-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-antrun-plugin -->
+            <!-- Description: Runs Ant scripts embedded in the POM -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-pom-as-metadata</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target name="copy-and-rename-pom">
+                                <copy file="${basedir}/pom.xml"
+                                      tofile="${project.build.outputDirectory}/json-split-pom.xml"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Source: https://maven.apache.org/plugins/maven-gpg-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-gpg-plugin -->
+            <!-- Description: Signs the project artifacts with GnuPG. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${maven-gpg-plugin.version}</version>
+            </plugin>
+            <!-- Source: https://maven.apache.org/plugins/maven-javadoc-plugin/download.cgi -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin -->
+            <!-- Description: The Apache Maven Javadoc Plugin is a plugin that uses the javadoc tool for generating javadocs for the specified project. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/versions-maven-plugin -->
+            <!-- Description: The Versions Maven Plugin is used when you want to manage the versions of artifacts in a project's POM. -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
+            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/versions-maven-plugin -->
+            <!-- Description: The Versions Maven Plugin is used when you want to manage the versions of artifacts in a project's POM. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <ignoredVersions type="regex">(?i).*[-_.](alpha|b|beta|rc|cr|milestone|m|ea|preview|snapshot)-?[-_.0-9]*</ignoredVersions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <url>https://central.sonatype.com/api/v1/publisher</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <property>
+                    <name>!release</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <version>${maven-antrun-plugin.version}</version>
+                            <executions>
+                                <execution>
+                                    <id>make-fat-jar</id>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>single</goal>
+                                    </goals>
+                                    <configuration>
+                                        <descriptorRefs>
+                                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                                        </descriptorRefs>
+                                        <archive>
+                                            <manifest>
+                                                <mainClass>io.github.dgp_eu.json_split.ApplicationJsonSplit</mainClass>
+                                            </manifest>
+                                        </archive>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
