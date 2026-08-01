@@ -45,11 +45,10 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <sonar.organization>dgp-eu</sonar.organization>
         <!-- Dependency versions -->
-        <tools.version>1.2.0-SNAPSHOT</tools.version>
+        <tools.version>1.2.0</tools.version>
         <jackson-databind.version>3.2.1</jackson-databind.version>
         <!-- Build Plugin versions -->
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
-        <flatten-maven-plugin.version>1.8.0</flatten-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
@@ -78,35 +77,6 @@
 
     <build>
         <plugins>
-            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
-            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-surefire-plugin -->
-            <!-- Description: Maven Surefire MOJO in maven-surefire-plugin. -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>${flatten-maven-plugin.version}</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <!-- enable flattening -->
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <!-- ensure proper cleanup -->
-                    <execution>
-                        <id>flatten.clean</id>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Source: https://github.com/takari/takari-lifecycle/releases -->
             <!-- Binaries: https://repo1.maven.org/maven2/io/takari/maven/plugins/takari-lifecycle-plugin -->
             <!-- Description: Takari Lifecycle Plugin -->
@@ -160,6 +130,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>${maven-gpg-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <passphraseEnvName>MAVEN_GPG_PASSPHRASE</passphraseEnvName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <!-- Source: https://maven.apache.org/plugins/maven-javadoc-plugin/download.cgi -->
             <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-javadoc-plugin -->
@@ -180,9 +162,9 @@
                     <doclint>none</doclint>
                 </configuration>
             </plugin>
-            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
-            <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/versions-maven-plugin -->
-            <!-- Description: The Versions Maven Plugin is used when you want to manage the versions of artifacts in a project's POM. -->
+            <!-- Website: https://central.sonatype.org/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/sonatype/central/central-publishing-maven-plugin/ -->
+            <!-- Description: This project is a maven plugin for publishing components in Maven Central, for more details on its usage see https://central.sonatype.org/publish/publish-portal-maven -->
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
@@ -194,7 +176,7 @@
                     <waitUntil>published</waitUntil>
                 </configuration>
             </plugin>
-            <!-- Source: https://maven.apache.org/surefire/maven-surefire-plugin/ -->
+            <!-- Source: https://www.mojohaus.org/versions/ -->
             <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/versions-maven-plugin -->
             <!-- Description: The Versions Maven Plugin is used when you want to manage the versions of artifacts in a project's POM. -->
             <plugin>
@@ -228,7 +210,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-assembly-plugin</artifactId>
-                        <version>${maven-antrun-plugin.version}</version>
+                        <version>${maven-assembly-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>make-fat-jar</id>

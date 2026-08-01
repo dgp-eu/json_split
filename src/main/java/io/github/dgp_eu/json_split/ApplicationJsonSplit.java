@@ -40,7 +40,7 @@ public final class ApplicationJsonSplit {
      * @param args command-line arguments
      */
     /* default */ static void main(final String... args) {
-        CommonInteractiveClass.startMeUpWithParameters("logs/DGP-EU_Tools-JsonSplit-", "/tools-json-split-pom.xml");
+        CommonInteractiveClass.startMeUpWithParameters("logs/JsonSplit-", "/json-split-pom.xml");
         final int intJsonExitCode = new CommandLine(new ApplicationJsonSplit()).execute(args);
         CommonInteractiveClass.shutMeDownWithParameters(intJsonExitCode, args[0]);
     }
