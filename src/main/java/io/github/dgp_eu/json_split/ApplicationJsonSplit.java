@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Properties;
 
-import io.github.dgp_eu.tools.cli.CommonInteractiveClass;
+import io.github.dgp_eu.tools.core.CommonInteractiveClass;
 import io.github.dgp_eu.tools.core.BasicStructuresClass;
 import io.github.dgp_eu.tools.core.FileOperationsClass;
 import io.github.dgp_eu.tools.core.LogExposureClass;

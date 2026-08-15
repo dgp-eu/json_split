@@ -45,8 +45,8 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <sonar.organization>dgp-eu</sonar.organization>
         <!-- Dependency versions -->
-        <tools.version>1.2.0</tools.version>
-        <jackson-databind.version>3.2.1</jackson-databind.version>
+        <tools.version>1.2.3</tools.version>
+        <jackson-databind.version>3.2.2</jackson-databind.version>
         <!-- Build Plugin versions -->
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
         <maven-antrun-plugin.version>3.2.0</maven-antrun-plugin.version>
@@ -61,11 +61,6 @@
         <dependency>
             <groupId>io.github.dgp-eu</groupId>
             <artifactId>tools-core</artifactId>
-            <version>${tools.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.dgp-eu</groupId>
-            <artifactId>tools-cli</artifactId>
             <version>${tools.version}</version>
         </dependency>
         <dependency>
