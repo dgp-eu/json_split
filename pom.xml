@@ -7,10 +7,12 @@
 
     <groupId>io.github.dgp-eu</groupId>
     <artifactId>json_split</artifactId>
-    <name>json_split</name>
-    <description>Java classes to split huge JSON file(s) into smaller and more manageable pieces</description>
     <version>1.0.0</version>
     <packaging>jar</packaging>
+
+    <name>json_split</name>
+    <description>Java classes to split huge JSON file(s) into smaller and more manageable pieces</description>
+    <url>https://github.com/dgp-eu/json_split</url>
 
     <licenses>
         <license>
@@ -34,6 +36,12 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:https://github.com/dgp-eu/json_split.git</connection>
+        <developerConnection>scm:git:ssh://github.com/dgp-eu/json_split.git</developerConnection>
+        <url>https://github.com/dgp-eu/json_split</url>
+    </scm>
+
     <properties>
         <!-- File encoding properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,7 +53,7 @@
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <sonar.organization>dgp-eu</sonar.organization>
         <!-- Dependency versions -->
-        <tools.version>1.2.4</tools.version>
+        <tools.version>1.2.5</tools.version>
         <jackson-databind.version>3.2.2</jackson-databind.version>
         <!-- Build Plugin versions -->
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
@@ -54,7 +62,9 @@
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
         <takari-lifecycle-plugin.version>2.3.4</takari-lifecycle-plugin.version>
+        <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
     </properties>
 
     <dependencies>
@@ -220,6 +230,17 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!-- Source: https://www.mojohaus.org/versions/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/codehaus/mojo/versions-maven-plugin -->
+            <!-- Description: The Versions Maven Plugin is used when you want to manage the versions of artifacts in a project's POM. -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <ignoredVersions type="regex">(?i).*[-_.](alpha|b|beta|rc|cr|milestone|m|ea|preview|snapshot)-?[-_.0-9]*</ignoredVersions>
+                </configuration>
             </plugin>
         </plugins>
     </build>
