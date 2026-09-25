@@ -47,13 +47,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Build properties -->
-        <java.version>26</java.version>
+        <java.version>27</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <sonar.organization>dgp-eu</sonar.organization>
         <!-- Dependency versions -->
-        <tools.version>1.2.7</tools.version>
+        <tools.version>1.2.8</tools.version>
         <jackson-databind.version>3.2.2</jackson-databind.version>
         <!-- Build Plugin versions -->
         <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
@@ -62,7 +62,9 @@
         <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+        <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+        <pmd.version>7.28.0</pmd.version>
         <takari-lifecycle-plugin.version>2.3.4</takari-lifecycle-plugin.version>
         <versions-maven-plugin.version>2.22.0</versions-maven-plugin.version>
     </properties>
@@ -165,6 +167,44 @@
                 </executions>
                 <configuration>
                     <doclint>none</doclint>
+                </configuration>
+            </plugin>
+            <!-- Source: https://github.com/apache/maven-pmd-plugin/ -->
+            <!-- Binaries: https://repo1.maven.org/maven2/org/apache/maven/plugins/maven-pmd-plugin -->
+            <!-- Description: A Maven plugin for the PMD toolkit, that produces a report on both code rule violations and detected copy and paste fragments, as well as being able to fail the build based on these metrics. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-core</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>net.sourceforge.pmd</groupId>
+                        <artifactId>pmd-java</artifactId>
+                        <version>${pmd.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rulesets>
+                        <ruleset>pmd-ruleset.xml</ruleset>
+                    </rulesets>
+                    <failOnViolation>true</failOnViolation>
+                    <linkXRef>false</linkXRef>
+                    <printFailingErrors>true</printFailingErrors>
+                    <skip>false</skip>
                 </configuration>
             </plugin>
             <!-- Website: https://central.sonatype.org/ -->

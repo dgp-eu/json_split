@@ -17,7 +17,6 @@ import java.util.Properties;
 
 import io.github.dgp_eu.tools.core.FileOperationsClass;
 import io.github.dgp_eu.tools.core.LogExposureClass;
-
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.core.JsonParser;
@@ -29,30 +28,18 @@ import tools.jackson.core.json.JsonFactory;
 /**
  * JSON split logic
  */
-public final class JsonSplitClass {
-    /**
-     * Minimum value length for bucketing
-     */
+public final class JsonSplitLogicClass {
+    /** Minimum value length for bucketing */
     /* default */ private static final int MIN_BUCKET_LENGTH = 4;
-    /**
-     * Length for bucketing customizable
-     */
+    /** Length for bucketing customizable */
     private static int intBucketLength;
-    /**
-     * variable for relevant field
-     */
+    /** variable for relevant field */
     private static String strRelevantField;
-    /**
-     * variable for input JSON file
-     */
+    /** variable for input JSON file */
     private static String strInputJsonFile;
-    /**
-     * variable for destination folder
-     */
+    /** variable for destination folder */
     private static String strOutFolder;
-    /**
-     * Writer for JSON content
-     */
+    /** Writer for JSON content */
     private static Writer writer;
 
     /**
@@ -174,7 +161,7 @@ public final class JsonSplitClass {
     public static void splitJsonIntoSmallerGrouped() {
         final JsonFactory jsonFactory = JsonFactory.builder().build();
         final ObjectReadContext readContext = ObjectReadContext.empty();
-        FileOperationsClass.MassChangeSubClass.setSearchingFolder(strOutFolder); // used for Mass Change (if necessary)
+        FileOperationsClass.MassFileChangeSubClass.setSearchingFolder(strOutFolder); // used for Mass Change (if necessary)
         final String strFeedbackTemp = String.format("JSON file named %s will be split into smaller pieces...", strInputJsonFile);
         LogExposureClass.LOGGER.debug(strFeedbackTemp);
         String rememberedValue = null;
@@ -253,10 +240,10 @@ public final class JsonSplitClass {
     private static void writeObjectStart(final Path outFile) {
         boolean isFileNew = true;
         if (Files.exists(outFile)) {
-            FileOperationsClass.MassChangeSubClass.setOldContent("]");
-            FileOperationsClass.MassChangeSubClass.setNewContent(",");
-            FileOperationsClass.MassChangeSubClass.setPattern(outFile.getFileName().toString());
-            FileOperationsClass.MassChangeSubClass.massChangeToFilesWithinFolder();
+            FileOperationsClass.MassFileChangeSubClass.setOldContent("]");
+            FileOperationsClass.MassFileChangeSubClass.setNewContent(",");
+            FileOperationsClass.MassFileChangeSubClass.setPattern(outFile.getFileName().toString());
+            FileOperationsClass.MassFileChangeSubClass.massChangeToFilesWithinFolder();
             isFileNew = false;
         }
         try {
@@ -290,7 +277,7 @@ public final class JsonSplitClass {
     /**
      * Constructor
      */
-    private JsonSplitClass() {
+    private JsonSplitLogicClass() {
         // intentionally blank
     }
 

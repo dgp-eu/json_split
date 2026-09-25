@@ -1,52 +1,16 @@
-/*
- * Copyright 2026 Daniel-Gheorghe Popiniuc
- */
-package io.github.dgp_eu.json_split;
+package io.github.dgp_eu.json_split.cli;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Properties;
 
-import io.github.dgp_eu.tools.core.CommonInteractiveClass;
+import io.github.dgp_eu.json_split.JsonSplitLogicClass;
 import io.github.dgp_eu.tools.core.BasicStructuresClass;
+import io.github.dgp_eu.tools.core.CommonInteractiveClass;
 import io.github.dgp_eu.tools.core.FileOperationsClass;
 import io.github.dgp_eu.tools.core.LogExposureClass;
 import picocli.CommandLine;
 import picocli.CommandLine.Mixin;
-
-
-
-/**
- * Main Command Line
- */
-@CommandLine.Command(
-    name = "top",
-    subcommands = {
-            JsonSplit.class
-    }
-)
-public final class ApplicationJsonSplit {
-
-    /**
-     * Constructor empty
-     */
-    private ApplicationJsonSplit() {
-        super();
-    }
-
-    /**
-     * Constructor
-     *
-     * @param args command-line arguments
-     */
-    /* default */ static void main(final String... args) {
-        CommonInteractiveClass.startMeUpWithParameters("logs/JsonSplit-", "/json-split-pom.xml");
-        final int intJsonExitCode = new CommandLine(new ApplicationJsonSplit()).execute(args);
-        CommonInteractiveClass.shutMeDownWithParameters(intJsonExitCode, args[0]);
-    }
-
-}
-
 
 /**
  * JSON splitter
@@ -136,15 +100,15 @@ class JsonSplit implements Runnable {
                 sizeThreshold,
                 sizeDifference.abs());
         LogExposureClass.LOGGER.info(strFeedback);
-        JsonSplitClass.setInputJsonFile(strFileName);
-        JsonSplitClass.setDestinationFolder(OPT_FOLDER_DEST.getFolderDestination());
-        JsonSplitClass.setRelevantField(strField);
+        JsonSplitLogicClass.setInputJsonFile(strFileName);
+        JsonSplitLogicClass.setDestinationFolder(OPT_FOLDER_DEST.getFolderDestination());
+        JsonSplitLogicClass.setRelevantField(strField);
         if (bucketLength != 0) {
-            JsonSplitClass.setBucketLength(bucketLength);
+            JsonSplitLogicClass.setBucketLength(bucketLength);
         }
-        final String destPattern = JsonSplitClass.buildDestinationFileName("x").replaceAll("x.json", ".*.json");
+        final String destPattern = JsonSplitLogicClass.buildDestinationFileName("x").replaceAll("x.json", ".*.json");
         FileOperationsClass.DeletingSubClass.deleteFilesMatchingPatternFromFolder(OPT_FOLDER_DEST.getFolderDestination(), destPattern); // clean slate to avoid inheriting old content
-        JsonSplitClass.splitJsonIntoSmallerGrouped(); // actual logic
+        JsonSplitLogicClass.splitJsonIntoSmallerGrouped(); // actual logic
     }
 
     /**
